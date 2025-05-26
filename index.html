@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Chat UI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: #171717;
+            border-right: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #333;
+        }
+
+        .new-chat-btn {
+            width: 100%;
+            padding: 12px;
+            background: #2d2d2d;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .new-chat-btn:hover {
+            background: #3d3d3d;
+        }
+
+        .chat-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .chat-item {
+            padding: 12px;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 14px;
+            color: #cccccc;
+        }
+
+        .chat-item:hover {
+            background: #2d2d2d;
+        }
+
+        .chat-item.active {
+            background: #2d2d2d;
+            color: #ffffff;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid #333;
+            background: #1a1a1a;
+        }
+
+        .chat-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 16px;
+            border-radius: 12px;
+            line-height: 1.5;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: #0084ff;
+            color: white;
+        }
+
+        .message.assistant {
+            align-self: flex-start;
+            background: #2d2d2d;
+            color: #ffffff;
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            border-top: 1px solid #333;
+            background: #1a1a1a;
+        }
+
+        .chat-input-wrapper {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 16px 50px 16px 16px;
+            background: #2d2d2d;
+            border: 1px solid #404040;
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 16px;
+            resize: none;
+            outline: none;
+            min-height: 24px;
+            max-height: 200px;
+        }
+
+        .chat-input:focus {
+            border-color: #0084ff;
+        }
+
+        .send-button {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            background: #0084ff;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .send-button:hover {
+            background: #0066cc;
+        }
+
+        .send-button:disabled {
+            background: #404040;
+            cursor: not-allowed;
+        }
+
+        .welcome-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .welcome-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #0084ff, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-subtitle {
+            font-size: 18px;
+            color: #888;
+            margin-bottom: 40px;
+        }
+
+        .example-prompts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .example-prompt {
+            padding: 20px;
+            background: #2d2d2d;
+            border: 1px solid #404040;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .example-prompt:hover {
+            background: #3d3d3d;
+            border-color: #0084ff;
+        }
+
+        .prompt-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .prompt-description {
+            color: #888;
+            font-size: 14px;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #404040;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <button class="new-chat-btn" onclick="createNewChat()">
+                    + New Chat
+                </button>
+            </div>
+            <div class="chat-list" id="chatList">
+                <!-- Chat items will be populated here -->
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="chat-header">
+                <div class="chat-title" id="chatTitle">Modern Chat UI</div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="welcome-screen" id="welcomeScreen">
+                    <h1 class="welcome-title">Welcome to Modern Chat UI</h1>
+                    <p class="welcome-subtitle">Start a conversation or try one of these examples</p>
+                    
+                    <div class="example-prompts">
+                        <div class="example-prompt" onclick="sendExamplePrompt('Explain quantum computing in simple terms')">
+                            <div class="prompt-title">Explain Concepts</div>
+                            <div class="prompt-description">Break down complex topics into easy-to-understand explanations</div>
+                        </div>
+                        <div class="example-prompt" onclick="sendExamplePrompt('Write a creative story about a time traveler')">
+                            <div class="prompt-title">Creative Writing</div>
+                            <div class="prompt-description">Generate stories, poems, and creative content</div>
+                        </div>
+                        <div class="example-prompt" onclick="sendExamplePrompt('Help me plan a productive morning routine')">
+                            <div class="prompt-title">Life Advice</div>
+                            <div class="prompt-description">Get suggestions for productivity and personal development</div>
+                        </div>
+                        <div class="example-prompt" onclick="sendExamplePrompt('Debug this JavaScript function')">
+                            <div class="prompt-title">Code Help</div>
+                            <div class="prompt-description">Get assistance with programming and technical problems</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <div class="chat-input-wrapper">
+                    <textarea 
+                        class="chat-input" 
+                        id="chatInput" 
+                        placeholder="Type your message here..."
+                        rows="1"
+                        onkeydown="handleKeyDown(event)"
+                        oninput="autoResize(this)"
+                    ></textarea>
+                    <button class="send-button" id="sendButton" onclick="sendMessage()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentChatId = null;
+        let chats = {};
+        let chatCounter = 0;
+
+        // Initialize the app
+        function init() {
+            loadChats();
+            updateChatList();
+        }
+
+        // Create a new chat
+        function createNewChat() {
+            chatCounter++;
+            const chatId = `chat_${chatCounter}`;
+            const chatTitle = `Chat ${chatCounter}`;
+            
+            chats[chatId] = {
+                id: chatId,
+                title: chatTitle,
+                messages: [],
+                createdAt: new Date()
+            };
+            
+            switchToChat(chatId);
+            updateChatList();
+            saveChats();
+        }
+
+        // Switch to a specific chat
+        function switchToChat(chatId) {
+            currentChatId = chatId;
+            document.getElementById('chatTitle').textContent = chats[chatId].title;
+            renderMessages();
+            updateChatList();
+            
+            // Hide welcome screen if it's visible
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            if (welcomeScreen) {
+                welcomeScreen.style.display = 'none';
+            }
+        }
+
+        // Update the chat list in the sidebar
+        function updateChatList() {
+            const chatList = document.getElementById('chatList');
+            chatList.innerHTML = '';
+            
+            Object.values(chats)
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .forEach(chat => {
+                    const chatItem = document.createElement('div');
+                    chatItem.className = `chat-item ${chat.id === currentChatId ? 'active' : ''}`;
+                    chatItem.textContent = chat.title;
+                    chatItem.onclick = () => switchToChat(chat.id);
+                    chatList.appendChild(chatItem);
+                });
+        }
+
+        // Render messages for the current chat
+        function renderMessages() {
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.innerHTML = '';
+            
+            if (currentChatId && chats[currentChatId]) {
+                chats[currentChatId].messages.forEach(message => {
+                    const messageElement = document.createElement('div');
+                    messageElement.className = `message ${message.role}`;
+                    messageElement.textContent = message.content;
+                    messagesContainer.appendChild(messageElement);
+                });
+            }
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Send a message
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Create new chat if none exists
+            if (!currentChatId) {
+                createNewChat();
+            }
+            
+            // Add user message
+            chats[currentChatId].messages.push({
+                role: 'user',
+                content: message,
+                timestamp: new Date()
+            });
+            
+            // Clear input
+            input.value = '';
+            autoResize(input);
+            
+            // Render messages
+            renderMessages();
+            
+            // Simulate AI response
+            setTimeout(() => {
+                const responses = [
+                    "I understand your question. Let me help you with that.",
+                    "That's an interesting point. Here's what I think...",
+                    "I'd be happy to assist you with this topic.",
+                    "Let me break this down for you step by step.",
+                    "That's a great question! Here's my perspective..."
+                ];
+                
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                
+                chats[currentChatId].messages.push({
+                    role: 'assistant',
+                    content: randomResponse,
+                    timestamp: new Date()
+                });
+                
+                renderMessages();
+                saveChats();
+            }, 1000);
+            
+            saveChats();
+        }
+
+        // Send example prompt
+        function sendExamplePrompt(prompt) {
+            document.getElementById('chatInput').value = prompt;
+            sendMessage();
+        }
+
+        // Handle keyboard shortcuts
+        function handleKeyDown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        // Auto-resize textarea
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
+        }
+
+        // Save chats to localStorage
+        function saveChats() {
+            localStorage.setItem('modernChatUI_chats', JSON.stringify(chats));
+            localStorage.setItem('modernChatUI_currentChat', currentChatId);
+            localStorage.setItem('modernChatUI_chatCounter', chatCounter);
+        }
+
+        // Load chats from localStorage
+        function loadChats() {
+            const savedChats = localStorage.getItem('modernChatUI_chats');
+            const savedCurrentChat = localStorage.getItem('modernChatUI_currentChat');
+            const savedChatCounter = localStorage.getItem('modernChatUI_chatCounter');
+            
+            if (savedChats) {
+                chats = JSON.parse(savedChats);
+            }
+            
+            if (savedCurrentChat && chats[savedCurrentChat]) {
+                currentChatId = savedCurrentChat;
+                switchToChat(currentChatId);
+            }
+            
+            if (savedChatCounter) {
+                chatCounter = parseInt(savedChatCounter);
+            }
+        }
+
+        // Make createNewChat available globally for menu integration
+        window.createNewChat = createNewChat;
+
+        // Initialize the app when the page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
