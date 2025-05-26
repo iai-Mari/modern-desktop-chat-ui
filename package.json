@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "Modern ChatGPT-inspired desktop chat interface built with Electron",
   "main": "main.js",
-  "homepage": "https://github.com/iai-mari/modern-desktop-chat-ui",
+  "homepage": "https://github.com/iai-Mari/modern-desktop-chat-ui",
   "repository": {
     "type": "git",
-    "url": "https://github.com/iai-mari/modern-desktop-chat-ui.git"
+    "url": "https://github.com/iai-Mari/modern-desktop-chat-ui.git"
   },
-  "author": "iai-mari",
+  "author": "iai-Mari",
   "license": "MIT",
   "scripts": {
     "start": "electron .",
@@ -66,11 +66,6 @@
       ],
       "icon": "build/icon.png",
       "category": "Office"
-    },
-    "publish": {
-      "provider": "github",
-      "owner": "iai-mari",
-      "repo": "modern-desktop-chat-ui"
     }
   },
   "devDependencies": {
