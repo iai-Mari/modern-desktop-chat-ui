@@ -1,15 +1,8 @@
 {
-  "name": "modern-desktop-chat-ui",
+  "name": "iai-personal-powerful-yours",
   "version": "1.0.0",
-  "description": "Modern ChatGPT-inspired desktop chat interface built with Electron",
+  "description": "iAI™ - Personal. Powerful. Yours.",
   "main": "main.js",
-  "homepage": "https://github.com/iai-Mari/modern-desktop-chat-ui",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/iai-Mari/modern-desktop-chat-ui.git"
-  },
-  "author": "iai-Mari",
-  "license": "MIT",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
@@ -21,8 +14,8 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "build": {
-    "appId": "com.modernui.chat",
-    "productName": "Modern Chat UI",
+    "appId": "com.iai.personal",
+    "productName": "iAI™ - Personal. Powerful. Yours.",
     "directories": {
       "output": "dist"
     },
@@ -38,7 +31,8 @@
       "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
       "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
       "!**/{appveyor.yml,.travis.yml,circle.yml}",
-      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
+      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
+      "!.env"
     ],
     "mac": {
       "category": "public.app-category.productivity",
@@ -71,5 +65,12 @@
   "devDependencies": {
     "electron": "^28.0.0",
     "electron-builder": "^24.6.4"
-  }
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0",
+    "openai": "^4.20.0",
+    "dotenv": "^16.3.1"
+  },
+  "author": "Mari",
+  "license": "MIT"
 }

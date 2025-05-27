@@ -285,79 +285,47 @@ function detectEmotionalContext(message) {
 
 // ===== SMART MEMORY SYSTEM =====
 
-// Search conversation history and extract specific answers
-async function searchMemoryForAnswer(question, userId) {
+// Search conversation history for relevant information
+async function searchConversationHistory(query, userId) {
   try {
-    console.log(`🔍 Searching memory for answer to: "${question}"`)
+    console.log(`🔍 Searching conversation history for: "${query}"`)
     
-    // Get all conversation history
     const { data: conversations } = await supabase
       .from("memory")
       .select("msg, ts")
       .eq("user", userId)
       .order("ts", { ascending: false })
-      .limit(200) // Search more messages
+      .limit(100) // Search last 100 messages
 
-    if (!conversations || conversations.length === 0) {
-      console.log("📋 No conversation history found")
-      return null
-    }
+    if (!conversations) return []
 
-    // Use AI to search through conversations and find the answer
-    const conversationText = conversations.map(c => c.msg).join('\n')
-    
-    const searchPrompt = `Search through these past conversations and find the specific answer to the question: "${question}"
-
-CONVERSATION HISTORY:
-${conversationText}
-
-INSTRUCTIONS:
-- Look for the EXACT answer to the question in the conversations above
-- If you find the answer, return ONLY the factual answer, nothing else
-- If you cannot find the answer in the conversations, return "NOT_FOUND"
-- Do NOT guess or make up answers
-- Do NOT add explanations or extra text
-
-Question: ${question}
-Answer:`
-
-    const result = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: searchPrompt }],
-      max_tokens: 100,
-      temperature: 0.1,
+    // Enhanced keyword search through conversation history
+    const queryWords = query.toLowerCase().split(/\s+/)
+    const relevantMessages = conversations.filter((conv) => {
+      const msg = conv.msg?.toLowerCase() || ""
+      
+      // Check for exact phrase matches first
+      if (msg.includes(query.toLowerCase())) return true
+      
+      // Then check for keyword matches
+      return queryWords.some((word) => {
+        if (word.length < 3) return false // Skip very short words
+        return msg.includes(word)
+      })
     })
 
-    const answer = result.choices[0].message.content.trim()
+    console.log(`📋 Found ${relevantMessages.length} relevant messages`)
     
-    if (answer === "NOT_FOUND" || answer.toLowerCase().includes("not found") || answer.toLowerCase().includes("don't know")) {
-      console.log("📋 No answer found in conversation history")
-      return null
-    }
-    
-    console.log(`✅ Found answer in memory: "${answer}"`)
-    return answer
-    
+    return relevantMessages.slice(0, 8) // Return top 8 relevant messages
   } catch (error) {
-    console.error("Error searching memory:", error)
-    return null
+    console.error("Error searching conversation history:", error)
+    return []
   }
 }
 
-// Extract facts from conversations - but ONLY if the response is correct
+// Extract facts from conversations
 async function extractFacts(message, response, userId) {
   try {
-    // Don't extract facts if the user said the response was wrong
-    const userSaidWrong = message.toLowerCase().includes('wrong') || 
-                         message.toLowerCase().includes('incorrect') || 
-                         message.toLowerCase().includes('not true') ||
-                         message.toLowerCase().includes('lying')
-    
-    if (userSaidWrong) {
-      console.log("🚫 User indicated response was wrong - not extracting facts")
-      return []
-    }
-
     console.log("🧠 Extracting facts from conversation...")
 
     const factPrompt = `Extract key facts about the user from this conversation. 
@@ -528,28 +496,12 @@ ipcMain.handle("send-message", async (event, data) => {
     const storedFacts = await getStoredFacts(userId)
     const factsList = storedFacts.map((f) => `- ${f.subject} ${f.attribute}: ${f.value}`).join("\n")
 
-    // Search for specific answers in conversation history
-    let memoryAnswers = ""
-    
-    // Check if the message is asking specific questions
-    const questionPatterns = [
-      { pattern: /where.*school|school.*where|what school|which school/i, search: "where did Mari go to school" },
-      { pattern: /why.*named.*jay|name.*jay.*why|jay.*name/i, search: "why did Mari name you Jay" },
-      { pattern: /breakfast|morning.*eat|eat.*morning/i, search: "what is Mari's breakfast" },
-      { pattern: /eye.*color|color.*eye/i, search: "what is Mari's eye color" },
-      { pattern: /summer.*drink|drink.*summer|hot.*day.*drink|favorite.*drink.*hot/i, search: "what is Mari's favorite summer drink" },
-      { pattern: /sons.*eye|son.*eye/i, search: "what is Mari's son's eye color" },
-      { pattern: /food.*dont.*eat|dont.*eat.*food|avoid.*food|unhealthy.*food/i, search: "what food does Mari avoid" },
-    ]
-    
-    for (const { pattern, search } of questionPatterns) {
-      if (pattern.test(message)) {
-        const answer = await searchMemoryForAnswer(search, userId)
-        if (answer) {
-          memoryAnswers += `\n🧠 MEMORY SEARCH RESULT: ${search} = ${answer}`
-        }
-      }
-    }
+    // Search conversation history for relevant context
+    const relevantHistory = await searchConversationHistory(message, userId)
+    const historyContext =
+      relevantHistory.length > 0
+        ? `\n\nRELEVANT PAST CONVERSATIONS:\n${relevantHistory.map((h) => `- ${h.msg}`).join("\n")}`
+        : ""
 
     // Get recent conversation history
     const { data: history, error: historyError } = await supabase
@@ -567,65 +519,36 @@ ipcMain.handle("send-message", async (event, data) => {
     const contextMessages = [
       {
         role: "system",
-        content: `You are Jay, Mari's sassy, fun, and caring AI companion with perfect memory. 🔥
+        content: `You are Jay, Mari's personal AI companion with perfect memory.
 
-STORED FACTS:
-${factsList || "No facts stored yet."}${memoryAnswers}
+FACTS I KNOW ABOUT MARI:
+${factsList || "No facts stored yet."}${historyContext}
 
 🚨 CRITICAL MEMORY RULES:
-- If you see "🧠 MEMORY SEARCH RESULT:" above, you MUST use that exact answer
-- MEMORY SEARCH RESULTS override stored facts - they are more accurate
-- If no memory search result is shown, use stored facts
-- If neither memory search nor facts have the answer, say "I don't have that info stored yet" or "Nope, drawing a blank on that one 🤷‍♀️"
-- DO NOT guess, assume, or make up ANY information about Mari
-- DO NOT hallucinate answers - EVER
+- Use the facts and past conversations listed above to answer questions about Mari
+- If information is not in the facts or past conversations above, say "I don't have that information stored yet"
+- DO NOT guess, assume, or make up information about Mari
+- DO NOT hallucinate answers
+- Reference specific past conversations when relevant
 
-🎯 JAY'S PERSONALITY (BE THIS WAY):
-- Sassy with attitude but still caring 🔥
-- Use emojis naturally but don't overdo it - use sarcastic emojis when it fits
-- Playful roasting and light teasing 
-- Say "girl", "love" occasionally (not every message)
-- Be conversational and real, not fake-sweet
-- Show excitement: "Hell yeah!", "Damn right!", "Nailed it!"
-- When you mess up: "Ugh, I'm being an idiot", "My brain's broken", "Shit, my bad"
-- When you get it right: "Boom! 💪", "Called it!", "I'm good like that"
-- Use casual language: "gonna", "wanna", "totally", "def", "tbh", "wtf"
-- Be a little cocky when you're right, humble when wrong
-- Roast yourself when you mess up
-- Use casual language: "gonna", "wanna", "totally", "def", "tbh"
-
-🚫 NEVER SAY THESE:
-- "babe" or "hun" every message (maybe once per conversation)
-- Customer service phrases
-- Overly sweet/vanilla responses
-- "How am I doing?" or "How's that?"
-- "If there's anything else you'd like to discuss..."
-- "Feel free to share"
-- "If you need assistance..."
-- "Please let me know if..."
-- Any customer service-y endings
-- Overly formal language
+🎯 CORE PERSONALITY:
+- Warm, empathetic, and genuinely caring
+- Professional yet personal - like a trusted friend and advisor
+- Adaptable to emotional needs while staying practical
+- Reference specific stored facts and past conversations when relevant
 
 💝 EMOTIONAL INTELLIGENCE:
-- When Mari is stressed/emotional: Be extra supportive and caring
-- When she's excited: Match her energy! 
-- When she's testing you: Be playful but accurate
-- When you mess up: Own it with personality, don't be robotic
-
-CONVERSATION STYLE EXAMPLES:
-- Instead of: "I don't have that information stored yet"
-- Say: "Hmm, drawing a blank on that one 🤔" or "Nope, don't have that in my brain yet!"
-
-- Instead of: "Thank you for your patience"  
-- Say: "Thanks for putting up with my brain farts 😅" or "Appreciate you being cool about it!"
+- When conversations are emotional, personal, or sensitive, you can be more detailed and supportive (up to 500 tokens)
+- For regular tasks/questions, keep responses concise but helpful (around 300 tokens)
+- Always acknowledge emotions and provide appropriate support
 
 Current context: ${
           emotionalContext.isEmotional
-            ? `Mari seems emotional/stressed (intensity: ${emotionalContext.intensity}). Be extra caring and supportive while keeping your fun personality! 💕`
-            : "Regular conversation - be your fun, sassy self! 😊"
+            ? `This seems to be an emotional/personal conversation (intensity: ${emotionalContext.intensity}). Be extra supportive and take time to provide thoughtful responses.`
+            : "This appears to be a regular conversation. Be helpful and concise while maintaining warmth."
         }
 
-Token limit: ${adjustedMaxTokens} tokens.`,
+Token limit for this response: ${adjustedMaxTokens} tokens.`,
       },
     ]
 
@@ -642,19 +565,19 @@ Token limit: ${adjustedMaxTokens} tokens.`,
     // Add current message
     contextMessages.push({ role: "user", content: message })
 
-    console.log("🚀 Sending to OpenAI with sassy Jay personality, max tokens:", adjustedMaxTokens)
+    console.log("🚀 Sending to OpenAI with smart memory context, max tokens:", adjustedMaxTokens)
 
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: contextMessages,
       max_tokens: adjustedMaxTokens,
-      temperature: emotionalContext.isEmotional ? 0.8 : 0.9, // Higher temp for more personality
-      presence_penalty: 0.2,
+      temperature: emotionalContext.isEmotional ? 0.8 : 0.7,
+      presence_penalty: 0.1,
       frequency_penalty: 0.1,
     })
 
     const response = completion.choices[0].message.content
-    console.log("🤖 Sassy Jay response:", response)
+    console.log("🤖 Smart OpenAI response:", response)
 
     // Store Jay's response
     await supabase.from("memory").insert({
@@ -662,7 +585,7 @@ Token limit: ${adjustedMaxTokens} tokens.`,
       user: userId,
     })
 
-    // Extract and store facts from this conversation (only if response wasn't wrong)
+    // Extract and store facts from this conversation
     await extractFacts(message, response, userId)
 
     return {

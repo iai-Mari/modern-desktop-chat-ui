@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iAI™ - Personal. Powerful. Yours.</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #333;
+        }
+
+        .sidebar-header {
+            padding: 32px 20px 24px 20px;
+            border-bottom: 1px solid #333;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 3px;
+            margin: 0;
+        }
+
+        .logo .trademark {
+            font-size: 18px;
+            vertical-align: super;
+            opacity: 0.9;
+        }
+
+        .nav-section {
+            margin-bottom: 32px;
+        }
+
+        .nav-title {
+            color: #666;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            padding: 0 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #ccc;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .nav-item:hover {
+            background: #2d2d2d;
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: #2d2d2d;
+            color: #fff;
+            border-right: 2px solid #fff;
+        }
+
+        .nav-item svg {
+            width: 18px;
+            height: 18px;
+            margin-right: 12px;
+            opacity: 0.8;
+        }
+
+        .nav-item .badge {
+            margin-left: auto;
+            background: #ff4444;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 16px;
+            text-align: center;
+        }
+
+        .new-tab-btn {
+            margin-top: auto;
+            padding: 16px 20px;
+            border-top: 1px solid #333;
+            display: flex;
+            align-items: center;
+            color: #ccc;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: none;
+            border-left: none;
+            border-right: none;
+            border-bottom: none;
+            width: 100%;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .new-tab-btn:hover {
+            background: #2d2d2d;
+            color: #fff;
+        }
+
+        .new-tab-btn svg {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            position: relative;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e5e5e5;
+            background: #ffffff;
+        }
+
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brain-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .brain-status.connected {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .brain-status.error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .brain-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .brain-status.connected .brain-status-dot {
+            background: #22c55e;
+        }
+
+        .brain-status.error .brain-status-dot {
+            background: #ef4444;
+        }
+
+        .account-settings {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: 1px solid #e5e5e5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .account-settings:hover {
+            background: #e5e5e5;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-header {
+            margin-bottom: 32px;
+        }
+
+        .content-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .content-subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .welcome-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .welcome-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+
+        .welcome-subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        .example-prompts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .example-prompt {
+            padding: 20px;
+            background: #f8f8f8;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .example-prompt:hover {
+            background: #ffffff;
+            border-color: #1a1a1a;
+        }
+
+        .prompt-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .prompt-description {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 16px 20px;
+            border-radius: 18px;
+            line-height: 1.5;
+            font-size: 15px;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .message.assistant {
+            align-self: flex-start;
+            background: #f0f0f0;
+            color: #1a1a1a;
+        }
+
+        .message.assistant .sender {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        .chat-input-container {
+            padding: 20px 40px 32px 40px;
+            border-top: 1px solid #e5e5e5;
+            background: #ffffff;
+        }
+
+        .chat-input-wrapper {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+        }
+
+        .input-field-wrapper {
+            flex: 1;
+            position: relative;
+            background: #f5f5f5;
+            border-radius: 24px;
+            border: 1px solid #e5e5e5;
+            transition: all 0.2s;
+        }
+
+        .input-field-wrapper:focus-within {
+            border-color: #1a1a1a;
+            background: #ffffff;
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 16px 160px 16px 50px;
+            background: transparent;
+            border: none;
+            border-radius: 24px;
+            color: #1a1a1a;
+            font-size: 15px;
+            resize: none;
+            outline: none;
+            min-height: 24px;
+            max-height: 120px;
+            font-family: inherit;
+        }
+
+        .chat-input::placeholder {
+            color: #999;
+        }
+
+        .attachment-btn {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .attachment-btn:hover {
+            color: #1a1a1a;
+        }
+
+        .input-controls {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .emoji-btn, .voice-btn, .mic-btn {
+            width: 24px;
+            height: 24px;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+
+        .emoji-btn:hover, .voice-btn:hover, .mic-btn:hover {
+            color: #1a1a1a;
+            background: #f0f0f0;
+        }
+
+        .voice-btn.active {
+            color: #22c55e;
+            background: #dcfce7;
+        }
+
+        .mic-btn.active {
+            color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .mic-btn.listening {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .send-button {
+            width: 40px;
+            height: 40px;
+            background: #1a1a1a;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .send-button:hover {
+            background: #333;
+        }
+
+        .send-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .voice-labels {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-left: 12px;
+        }
+
+        .voice-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .voice-label.active {
+            color: #22c55e;
+            font-weight: 500;
+        }
+
+        .voice-status {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid white;
+            display: none;
+        }
+
+        .voice-status.speaking {
+            background: #22c55e;
+            display: block;
+            animation: pulse 1s infinite;
+        }
+
+        .voice-status.listening {
+            background: #ef4444;
+            display: block;
+            animation: pulse 1s infinite;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .empty-state {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .empty-state-icon {
+            width: 64px;
+            height: 64px;
+            background: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .empty-state-icon svg {
+            width: 32px;
+            height: 32px;
+            color: #999;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            color: #666;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .create-btn {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .create-btn:hover {
+            background: #333;
+        }
+
+        .emoji-picker {
+            position: absolute;
+            bottom: 60px;
+            right: 120px;
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 100;
+            width: 300px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .emoji-picker.active {
+            display: block;
+        }
+
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+        }
+
+        .emoji-item {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.2s;
+            font-size: 18px;
+        }
+
+        .emoji-item:hover {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <h1>iAI<span class="trademark">™</span></h1>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">NAVIGATION</div>
+                <button class="nav-item active" onclick="switchTab('main')" data-tab="main">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                    </svg>
+                    Main
+                </button>
+                <button class="nav-item" onclick="switchTab('memory')" data-tab="memory">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    Memory
+                </button>
+                <button class="nav-item" onclick="switchTab('projects')" data-tab="projects">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/>
+                    </svg>
+                    Projects
+                </button>
+                <button class="nav-item" onclick="switchTab('tasks')" data-tab="tasks">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    </svg>
+                    Tasks
+                </button>
+                <button class="nav-item" onclick="switchTab('chats')" data-tab="chats">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+                    </svg>
+                    Chats
+                </button>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">RESOURCES</div>
+                <button class="nav-item" onclick="switchTab('library')" data-tab="library">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/>
+                    </svg>
+                    Library
+                    <span class="badge" id="libraryBadge">0</span>
+                </button>
+                <button class="nav-item" onclick="switchTab('notifications')" data-tab="notifications">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                    </svg>
+                    Notifications
+                    <span class="badge" id="notificationsBadge">0</span>
+                </button>
+            </div>
+
+            <button class="new-tab-btn" onclick="createNewTab()">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                </svg>
+                New Tab
+            </button>
+        </div>
+
+        <div class="main-content">
+            <div class="top-bar">
+                <div class="top-bar-left">
+                    <h2 class="content-title" id="pageTitle">Main</h2>
+                </div>
+                <div class="top-bar-right">
+                    <div class="brain-status error" id="brainStatus">
+                        <div class="brain-status-dot"></div>
+                        <span>Brain Disconnected</span>
+                    </div>
+                    <button class="account-settings" onclick="openAccountSettings()">
+                        <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                            <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.82,11.69,4.82,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-section active" id="main-content">
+                <div class="welcome-screen" id="welcomeScreen">
+                    <h1 class="welcome-title">Hey there! 👋</h1>
+                    <p class="welcome-subtitle">I'm Jay, your AI companion. I can speak to you with my voice and listen when you talk. Try the voice controls below!</p>
+                    
+                    <div class="example-prompts">
+                        <div class="example-prompt" onclick="sendExampleMessage('Tell me about yourself Jay')">
+                            <div class="prompt-title">Meet Jay</div>
+                            <div class="prompt-description">Learn about your AI companion</div>
+                        </div>
+                        <div class="example-prompt" onclick="sendExampleMessage('What can you help me with?')">
+                            <div class="prompt-title">Capabilities</div>
+                            <div class="prompt-description">Discover what Jay can do</div>
+                        </div>
+                        <div class="example-prompt" onclick="sendExampleMessage('Test your voice')">
+                            <div class="prompt-title">Voice Test</div>
+                            <div class="prompt-description">Hear Jay speak out loud</div>
+                        </div>
+                        <div class="example-prompt" onclick="sendExampleMessage('How does speech recognition work?')">
+                            <div class="prompt-title">Speech Input</div>
+                            <div class="prompt-description">Learn about voice input</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages" style="display: none;"></div>
+
+                <div class="chat-input-container">
+                    <div class="chat-input-wrapper">
+                        <div class="input-field-wrapper">
+                            <button class="attachment-btn" onclick="handleAttachment()">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5a2.5 2.5 0 0 1 5 0v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5a2.5 2.5 0 0 0 5 0V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.31 2.69 6 6 6s6-2.69 6-6V6h-2.5z"/>
+                                </svg>
+                            </button>
+                            <textarea 
+                                class="chat-input" 
+                                id="chatInput" 
+                                placeholder="Talk to Jay..."
+                                rows="1"
+                                onkeydown="handleKeyDown(event)"
+                                oninput="autoResize(this)"
+                            ></textarea>
+                            <div class="input-controls">
+                                <button class="emoji-btn" onclick="toggleEmojiPicker()">
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                    </svg>
+                                </button>
+                                <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()" title="Toggle Jay's voice">
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                                    </svg>
+                                    <div class="voice-status" id="voiceStatus"></div>
+                                </button>
+                                <button class="mic-btn" id="micBtn" onclick="toggleMic()" title="Voice input">
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
+                                    </svg>
+                                    <div class="voice-status" id="micStatus"></div>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="send-button" id="sendButton" onclick="sendMessage()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                            </svg>
+                        </button>
+                        <div class="voice-labels">
+                            <span class="voice-label" id="jayVoiceLabel">Jay voice</span>
+                            <span class="voice-label" id="youSpeakLabel">You speak</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="emoji-picker" id="emojiPicker">
+                    <div class="emoji-grid">
+                        <div class="emoji-item" onclick="insertEmoji('😀')">😀</div>
+                        <div class="emoji-item" onclick="insertEmoji('😃')">😃</div>
+                        <div class="emoji-item" onclick="insertEmoji('😄')">😄</div>
+                        <div class="emoji-item" onclick="insertEmoji('😁')">😁</div>
+                        <div class="emoji-item" onclick="insertEmoji('😊')">😊</div>
+                        <div class="emoji-item" onclick="insertEmoji('😍')">😍</div>
+                        <div class="emoji-item" onclick="insertEmoji('🤔')">🤔</div>
+                        <div class="emoji-item" onclick="insertEmoji('😎')">😎</div>
+                        <div class="emoji-item" onclick="insertEmoji('👍')">👍</div>
+                        <div class="emoji-item" onclick="insertEmoji('👎')">👎</div>
+                        <div class="emoji-item" onclick="insertEmoji('❤️')">❤️</div>
+                        <div class="emoji-item" onclick="insertEmoji('🔥')">🔥</div>
+                        <div class="emoji-item" onclick="insertEmoji('💯')">💯</div>
+                        <div class="emoji-item" onclick="insertEmoji('🎉')">🎉</div>
+                        <div class="emoji-item" onclick="insertEmoji('🚀')">🚀</div>
+                        <div class="emoji-item" onclick="insertEmoji('💡')">💡</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Voice functionality
+        let speechSynthesis = window.speechSynthesis;
+        let speechRecognition = null;
+        let isVoiceEnabled = true;
+        let isListening = false;
+        let jayVoice = null;
+
+        // Initialize speech recognition
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            speechRecognition = new SpeechRecognition();
+            speechRecognition.continuous = false;
+            speechRecognition.interimResults = false;
+            speechRecognition.lang = 'en-US';
+
+            speechRecognition.onstart = function() {
+                isListening = true;
+                updateMicStatus();
+                document.getElementById('youSpeakLabel').classList.add('active');
+            };
+
+            speechRecognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('chatInput').value = transcript;
+                autoResize(document.getElementById('chatInput'));
+                sendMessage();
+            };
+
+            speechRecognition.onend = function() {
+                isListening = false;
+                updateMicStatus();
+                document.getElementById('youSpeakLabel').classList.remove('active');
+            };
+
+            speechRecognition.onerror = function(event) {
+                console.error('Speech recognition error:', event.error);
+                isListening = false;
+                updateMicStatus();
+                document.getElementById('youSpeakLabel').classList.remove('active');
+            };
+        }
+
+        // Initialize Jay's voice (male American voice)
+        function initializeJayVoice() {
+            const voices = speechSynthesis.getVoices();
+            // Look for male American English voices
+            jayVoice = voices.find(voice => 
+                voice.lang.includes('en-US') && 
+                (voice.name.includes('Male') || voice.name.includes('David') || voice.name.includes('Alex'))
+            ) || voices.find(voice => voice.lang.includes('en-US')) || voices[0];
+        }
+
+        // Initialize voices when they're loaded
+        speechSynthesis.onvoiceschanged = initializeJayVoice;
+        initializeJayVoice();
+
+        // Speak text with Jay's voice
+        function speakText(text) {
+            if (!isVoiceEnabled || !text) return;
+
+            // Cancel any ongoing speech
+            speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.voice = jayVoice;
+            utterance.rate = 0.9; // Slightly slower for clarity
+            utterance.pitch = 0.8; // Slightly lower pitch for male voice
+            utterance.volume = 0.8;
+
+            utterance.onstart = function() {
+                updateVoiceStatus(true);
+                document.getElementById('jayVoiceLabel').classList.add('active');
+            };
+
+            utterance.onend = function() {
+                updateVoiceStatus(false);
+                document.getElementById('jayVoiceLabel').classList.remove('active');
+            };
+
+            speechSynthesis.speak(utterance);
+        }
+
+        // Toggle voice output
+        function toggleVoice() {
+            isVoiceEnabled = !isVoiceEnabled;
+            updateVoiceButton();
+            
+            if (!isVoiceEnabled) {
+                speechSynthesis.cancel();
+                updateVoiceStatus(false);
+                document.getElementById('jayVoiceLabel').classList.remove('active');
+            }
+        }
+
+        // Toggle microphone input
+        function toggleMic() {
+            if (!speechRecognition) {
+                alert('Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.');
+                return;
+            }
+
+            if (isListening) {
+                speechRecognition.stop();
+            } else {
+                speechRecognition.start();
+            }
+        }
+
+        // Update voice button appearance
+        function updateVoiceButton() {
+            const voiceBtn = document.getElementById('voiceBtn');
+            if (isVoiceEnabled) {
+                voiceBtn.classList.add('active');
+                voiceBtn.title = 'Jay\'s voice is ON - Click to turn OFF';
+            } else {
+                voiceBtn.classList.remove('active');
+                voiceBtn.title = 'Jay\'s voice is OFF - Click to turn ON';
+            }
+        }
+
+        // Update voice status indicator
+        function updateVoiceStatus(speaking) {
+            const voiceStatus = document.getElementById('voiceStatus');
+            if (speaking) {
+                voiceStatus.classList.add('speaking');
+            } else {
+                voiceStatus.classList.remove('speaking');
+            }
+        }
+
+        // Update mic status indicator
+        function updateMicStatus() {
+            const micBtn = document.getElementById('micBtn');
+            const micStatus = document.getElementById('micStatus');
+            
+            if (isListening) {
+                micBtn.classList.add('active', 'listening');
+                micStatus.classList.add('listening');
+                micBtn.title = 'Listening... Click to stop';
+            } else {
+                micBtn.classList.remove('active', 'listening');
+                micStatus.classList.remove('listening');
+                micBtn.title = 'Click to speak';
+            }
+        }
+
+        // Chat functionality
+        let currentConversation = [];
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Show chat area and hide welcome screen
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('chatMessages').style.display = 'flex';
+            
+            // Add user message
+            addMessage('user', message);
+            
+            // Clear input
+            input.value = '';
+            autoResize(input);
+            
+            try {
+                const response = await window.electronAPI?.sendMessage({
+                    message: message,
+                    conversationId: null,
+                    maxTokens: 400
+                });
+
+                if (response && response.success) {
+                    addMessage('assistant', response.response);
+                    if (isVoiceEnabled) {
+                        speakText(response.response);
+                    }
+                    
+                    if (response.mode !== 'demo') {
+                        const brainStatus = document.getElementById('brainStatus');
+                        brainStatus.className = 'brain-status connected';
+                        brainStatus.innerHTML = '<div class="brain-status-dot"></div><span>Brain Connected! 🧠</span>';
+                    }
+                } else {
+                    const fallbackResponse = generateJayResponse(message);
+                    addMessage('assistant', fallbackResponse);
+                    if (isVoiceEnabled) {
+                        speakText(fallbackResponse);
+                    }
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+                const fallbackResponse = generateJayResponse(message);
+                addMessage('assistant', fallbackResponse);
+                if (isVoiceEnabled) {
+                    speakText(fallbackResponse);
+                }
+            }
+        }
+
+        function addMessage(role, content) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            
+            if (role === 'assistant') {
+                messageDiv.innerHTML = `<div class="sender">Jay</div>${content}`;
+            } else {
+                messageDiv.textContent = content;
+            }
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Save to conversation
+            currentConversation.push({ role, content });
+        }
+
+        function generateJayResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            if (lowerMessage.includes('voice') || lowerMessage.includes('speak')) {
+                return "Hey! I'm Jay, and yes, I can speak to you with my voice! I use a male American voice that should sound friendly and natural. You can toggle my voice on and off using the speaker button next to the input field. Try asking me something and I'll speak my response out loud!";
+            }
+            
+            if (lowerMessage.includes('yourself') || lowerMessage.includes('who are you')) {
+                return "I'm Jay, your personal AI companion! I'm designed to be helpful, friendly, and emotionally intelligent. I can speak to you with my voice and listen when you talk using the microphone. I'm here to assist with tasks, have conversations, and adapt to your needs. What would you like to know about me?";
+            }
+            
+            if (lowerMessage.includes('help') || lowerMessage.includes('capabilities')) {
+                return "I can help you with many things! I can have conversations, answer questions, help with tasks and projects, manage your memory and notes, and much more. I have voice capabilities - I can speak my responses out loud and listen to your voice input. Try using the microphone button to talk to me, or the speaker button to toggle my voice responses!";
+            }
+            
+            if (lowerMessage.includes('test') && lowerMessage.includes('voice')) {
+                return "Voice test successful! You should be hearing me speak this message right now with my male American voice. If you can hear me clearly, then everything is working perfectly! You can adjust my voice settings or turn off voice responses using the speaker button. How does my voice sound to you?";
+            }
+            
+            if (lowerMessage.includes('speech') || lowerMessage.includes('microphone')) {
+                return "Speech recognition lets you talk to me instead of typing! Just click the microphone button and start speaking. I'll convert your speech to text and respond accordingly. Make sure to speak clearly and give me permission to use your microphone when prompted. It works best in quiet environments!";
+            }
+            
+            // Default responses
+            const responses = [
+                "That's interesting! I'm here to help and chat with you. What else would you like to know?",
+                "I understand! Feel free to ask me anything or let me know how I can assist you today.",
+                "Thanks for sharing that with me! I'm always ready to help or have a conversation.",
+                "I appreciate you talking with me! Is there anything specific I can help you with?",
+                "That's great! I'm here whenever you need assistance or just want to chat."
+            ];
+            
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        function sendExampleMessage(message) {
+            document.getElementById('chatInput').value = message;
+            sendMessage();
+        }
+
+        // Emoji functionality
+        function toggleEmojiPicker() {
+            const picker = document.getElementById('emojiPicker');
+            picker.classList.toggle('active');
+        }
+
+        function insertEmoji(emoji) {
+            const input = document.getElementById('chatInput');
+            input.value += emoji;
+            autoResize(input);
+            document.getElementById('emojiPicker').classList.remove('active');
+            input.focus();
+        }
+
+        // Input handling
+        function handleKeyDown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+        }
+
+        function handleAttachment() {
+            alert('File attachment feature coming soon! You\'ll be able to upload images, documents, and other files.');
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            document.getElementById('pageTitle').textContent = tabName.charAt(0).toUpperCase() + tabName.slice(1);
+        }
+
+        // Account settings
+        function openAccountSettings() {
+            alert('Account settings coming soon! You\'ll be able to customize your profile, voice preferences, and more.');
+        }
+
+        // Other functions
+        function createNewTab() {
+            alert('New tab functionality coming soon!');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('iAI™ loaded with voice capabilities');
+            updateVoiceButton();
+            
+            // Close emoji picker when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.emoji-btn') && !e.target.closest('.emoji-picker')) {
+                    document.getElementById('emojiPicker').classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

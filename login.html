@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iAI™ - Personal. Powerful. Yours.</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #ffffff;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 60px 50px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            position: relative;
+        }
+
+        .logo {
+            margin-bottom: 40px;
+        }
+
+        .logo h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: 3px;
+            margin-bottom: 12px;
+        }
+
+        .logo .trademark {
+            font-size: 20px;
+            vertical-align: super;
+            opacity: 0.8;
+        }
+
+        .tagline {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .auth-section {
+            margin-bottom: 40px;
+        }
+
+        .auth-title {
+            font-size: 28px;
+            color: #1a1a1a;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e5e5e5;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f8f8;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(26, 26, 26, 0.1);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(26, 26, 26, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #1a1a1a;
+            border: 2px solid #1a1a1a;
+        }
+
+        .btn-secondary:hover {
+            background: #1a1a1a;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(26, 26, 26, 0.3);
+        }
+
+        .divider {
+            margin: 30px 0;
+            position: relative;
+            text-align: center;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e5e5e5;
+        }
+
+        .divider span {
+            background: #ffffff;
+            padding: 0 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .demo-section {
+            margin-top: 30px;
+        }
+
+        .demo-text {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 20px;
+            background: #f8f8f8;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            background: #f0f0f0;
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .feature h3 {
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .feature p {
+            color: #666;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .loading {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 24px;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .loading.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e5e5e5;
+            border-top: 4px solid #1a1a1a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loading-text {
+            color: #1a1a1a;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>iAI<span class="trademark">™</span></h1>
+            <p class="tagline">Personal. Powerful. Yours.</p>
+        </div>
+
+        <div class="auth-section">
+            <h2 class="auth-title">Welcome Back</h2>
+            
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email">
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Enter your password">
+                </div>
+                
+                <div class="input-group" style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                    <input type="checkbox" id="rememberMe" style="width: auto; margin: 0;">
+                    <label for="rememberMe" style="margin: 0; font-size: 16px; cursor: pointer;">Remember me</label>
+                </div>
+                
+                <div class="input-group" style="display: none;                </div>
+                
+                <div class="input-group" style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                    <input type="checkbox" id="rememberMe" style="width: auto; margin: 0;">
+                    <label for="rememberMe" style="margin: 0; font-size: 16px; cursor: pointer;">Remember me</label>
+                </div>
+                
+                <div class="input-group" style="display: none;                </div>
+                
+                <div class="auth-buttons">
+                    <button type="submit" class="btn btn-primary">Sign In</button>
+                    <button type="button" class="btn btn-secondary" onclick="switchToSignUp()">Sign Up</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="divider">
+            <span>or continue with demo</span>
+        </div>
+
+        <div class="demo-section">
+            <p class="demo-text">
+                Experience iAI™ without creating an account. Perfect for testing features and exploring capabilities.
+            </p>
+            <button class="btn btn-primary" onclick="continueWithDemo()" style="width: 100%;">
+                Continue with Demo
+            </button>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🧠</div>
+                <h3>Smart Memory</h3>
+                <p>Intelligent conversation history</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">💝</div>
+                <h3>Emotional Intelligence</h3>
+                <p>Adapts to your needs</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🚀</div>
+                <h3>Multi-Agent System</h3>
+                <p>Specialized agents</p>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <div class="loading-text">Connecting to your AI companion...</div>
+        </div>
+    </div>
+
+    <script>
+        function switchToSignUp() {
+            document.querySelector('.auth-title').textContent = 'Create Account';
+            document.querySelector('.btn-primary').textContent = 'Sign Up';
+            document.querySelector('.btn-secondary').textContent = 'Sign In';
+            document.querySelector('.btn-secondary').onclick = switchToSignIn;
+        }
+
+        function switchToSignIn() {
+            document.querySelector('.auth-title').textContent = 'Welcome Back';
+            document.querySelector('.btn-primary').textContent = 'Sign In';
+            document.querySelector('.btn-secondary').textContent = 'Sign Up';
+            document.querySelector('.btn-secondary').onclick = switchToSignUp;
+        }
+
+        async function continueWithDemo() {
+            showLoading();
+            
+            try {
+                // Tell Electron to switch to main window
+                await window.electronAPI?.loginSuccess();
+            } catch (error) {
+                console.error('Error switching to main window:', error);
+                // Fallback to direct navigation
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('loading').classList.add('active');
+        }
+
+        // Load saved email on page load
+        document.addEventListener("DOMContentLoaded", function() {
+            const savedEmail = localStorage.getItem("rememberedEmail");
+            const rememberMe = localStorage.getItem("rememberMe") === "true";
+            
+            if (savedEmail && rememberMe) {
+                document.getElementById("email").value = savedEmail;
+                document.getElementById("rememberMe").checked = true;
+            }
+        });
+        
+        document.getElementById("loginForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            
+            // Save email if remember me is checked
+            const email = document.getElementById("email").value;
+            const rememberMe = document.getElementById("rememberMe").checked;
+            
+            if (rememberMe) {
+                localStorage.setItem("rememberedEmail", email);
+                localStorage.setItem("rememberMe", "true");
+            } else {
+                localStorage.removeItem("rememberedEmail");
+                localStorage.removeItem("rememberMe");
+            }
+            
+            showLoading();
+            
+            // Simulate authentication
+            setTimeout(() => {
+                window.location.href = "index.html";
+            }, 2000);
+        });    </script>
+</body>
+</html>

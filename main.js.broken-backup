@@ -1,0 +1,114 @@
+const { app, BrowserWindow, ipcMain } = require("electron");
+const path = require("path");
+const fs = require("fs");
+const { createClient } = require("@supabase/supabase-js");
+const { OpenAI } = require("openai");
+const config = require("./config");
+
+const supabase = createClient(config.SUPABASE_URL, config.SUPABASE_KEY);
+const openai = new OpenAI({ apiKey: config.OPENAI_API_KEY });
+
+let session = null;
+let loginWin, mainWin;
+
+function createLoginWindow() {
+  loginWin = new BrowserWindow({
+    width: 400,
+    height: 300,
+    resizable: false,
+    center: true,
+    frame: true,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js"),
+    },
+  });
+  loginWin.loadFile("login.html");
+}
+
+function createMainWindow() {
+  mainWin = new BrowserWindow({
+    width: 1000,
+    height: 700,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js"),
+    },
+  });
+  mainWin.loadFile("index.html");
+}
+
+ipcMain.on("login", async (event, { email, password }) => {
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error || !data.session) {
+      console.log("❌ Login failed:", error?.message);
+      event.sender.send("login-error", error?.message || "Login failed");
+    } else {
+      console.log("✅ Logged in as:", email);
+      session = data.session;
+      loginWin.close();
+      createMainWindow();
+      event.sender.send("login-success");
+    }
+  } catch (err) {
+    console.log("❌ Login error:", err.message);
+    event.sender.send("login-error", err.message);
+  }
+});
+
+ipcMain.on("to-gpt", async (event, msg) => {
+  if (!session) {
+    event.reply("from-gpt", "❌ Auth error: Auth session missing!");
+    return;
+  }
+
+  const { user } = session;
+
+  try {
+    await supabase.from(config.MEMORY_TABLE).insert([{ user: user.id, msg: `You: ${msg}` }]);
+
+    const { data: memoryRows, error } = await supabase
+      .from(config.MEMORY_TABLE)
+      .select("msg")
+      .eq("user", user.id)
+      .order("ts", { ascending: true });
+
+    console.log("🧠 Memory rows:", memoryRows);
+    if (error) console.log("❌ Supabase memory fetch error:", error.message);
+
+    const messages = [
+      { role: "system", content: "You are Jay, Mari's assistant." },
+      ...memoryRows.map(row => {
+        const isUser = row.msg.startsWith("You:");
+        return {
+          role: isUser ? "user" : "assistant",
+          content: row.msg.replace(/^You:\s?|^Jay:\s?/i, "").trim()
+        };
+      }),
+      { role: "user", content: msg }
+    ];
+
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages
+    });
+
+    const reply = completion.choices[0].message.content.trim();
+    await supabase.from(config.MEMORY_TABLE).insert([{ user: user.id, msg: `Jay: ${reply}` }]);
+
+    event.reply("from-gpt", reply);
+  } catch (err) {
+    event.reply("from-gpt", "❌ GPT Error: " + err.message);
+  }
+});
+
+app.whenReady().then(() => {
+  session = null;
+  createLoginWindow();
+  app.on("activate", () => {
+    if (BrowserWindow.getAllWindows().length === 0) createLoginWindow();
+  });
+});
+
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") app.quit();
+});

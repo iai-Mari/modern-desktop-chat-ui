@@ -12,8 +12,8 @@
             --text-primary: #ffffff;
             --text-secondary: #cccccc;
             --text-muted: #888888;
-            --accent: #ffffff;
-            --accent-hover: #f0f0f0;
+            --accent: #4a9eff;
+            --accent-hover: #3a8eef;
             --border: #3a3a3a;
             --chat-bg: #1a1a1a;
             --chat-input-bg: #2a2a2a;
@@ -26,11 +26,11 @@
             --text-primary: #212529;
             --text-secondary: #495057;
             --text-muted: #6c757d;
-            --accent: #000000;
-            --accent-hover: #333333;
+            --accent: #0066cc;
+            --accent-hover: #0052a3;
             --border: #dee2e6;
             --chat-bg: #ffffff;
-            --chat-input-bg: #1a1a1a; /* Keep chat input dark in light mode */
+            --chat-input-bg: #f8f9fa;
         }
 
         * {
@@ -46,7 +46,6 @@
             height: 100vh;
             overflow: hidden;
             transition: all 0.3s ease;
-            -webkit-app-region: no-drag;
         }
 
         .app-container {
@@ -56,38 +55,26 @@
 
         .sidebar {
             width: 280px;
-            background: #1a1a1a; /* Always dark */
-            border-right: 1px solid #3a3a3a;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
         }
 
         .logo {
             padding: 25px 20px;
-            border-bottom: 1px solid #3a3a3a;
+            border-bottom: 1px solid var(--border);
             text-align: center;
-            -webkit-app-region: drag;
-            height: 81px; /* Fixed height to match header */
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .logo h1 {
-            font-size: 32px;
-            font-weight: 700; /* Bold as requested */
-            color: #ffffff;
-            letter-spacing: 2px;
-            position: relative;
-        }
-
-        .logo h1::after {
-            content: '™';
-            font-size: 12px;
-            position: absolute;
-            top: 0;
-            right: -12px;
-            font-weight: 400;
+            font-size: 32px; /* Increased from 24px */
+            font-weight: 700;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--accent), #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .nav-section {
@@ -96,9 +83,9 @@
 
         .nav-title {
             padding: 0 20px 15px;
-            font-size: 14px;
-            font-weight: 400;
-            color: #888888;
+            font-size: 14px; /* Increased from 12px */
+            font-weight: 600;
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -106,31 +93,30 @@
         .nav-item {
             display: flex;
             align-items: center;
-            padding: 15px 20px;
+            padding: 15px 20px; /* Increased padding */
             cursor: pointer;
             transition: all 0.2s;
             border: none;
             background: none;
-            color: #cccccc;
+            color: var(--text-secondary);
             width: 100%;
             text-align: left;
-            font-size: 16px;
-            font-weight: 400;
+            font-size: 16px; /* Increased from 14px */
         }
 
         .nav-item:hover {
-            background: #2a2a2a;
-            color: #ffffff;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
         }
 
         .nav-item.active {
-            background: rgba(255, 255, 255, 0.15); /* More transparent */
+            background: var(--accent);
             color: #ffffff;
         }
 
         .nav-item i {
             margin-right: 12px;
-            width: 20px;
+            width: 20px; /* Increased icon space */
             font-size: 16px;
         }
 
@@ -143,43 +129,38 @@
 
         .header {
             padding: 20px 30px;
-            border-bottom: 1px solid #3a3a3a; /* Always dark border */
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #1a1a1a; /* Always dark header */
-            -webkit-app-region: drag;
-            height: 81px; /* Match sidebar logo height */
+            background: var(--bg-secondary);
         }
 
         .header h2 {
             font-size: 24px;
-            font-weight: 300;
-            color: #ffffff; /* Always white text */
+            font-weight: 600;
         }
 
         .header-controls {
             display: flex;
             align-items: center;
             gap: 15px;
-            -webkit-app-region: no-drag;
         }
 
         .theme-toggle {
-            background: transparent;
-            border: 1px solid #3a3a3a;
-            color: #ffffff;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
             padding: 8px 12px;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
             transition: all 0.2s;
-            font-weight: 300;
         }
 
         .theme-toggle:hover {
-            background: #ffffff;
-            color: #1a1a1a;
+            background: var(--accent);
+            color: white;
         }
 
         .status {
@@ -192,36 +173,19 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: #22c55e; /* Light green when connected */
+            background: #22c55e; /* Green when connected */
         }
 
         .status-dot.disconnected {
-            background: #888888;
-        }
-
-        .settings-btn {
-            background: transparent;
-            border: 1px solid #3a3a3a;
-            color: #ffffff;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        .settings-btn:hover {
-            background: #ffffff;
-            color: #1a1a1a;
+            background: #ef4444; /* Red when disconnected */
         }
 
         .content-area {
             flex: 1;
             padding: 30px;
-            overflow-y: auto; /* Enable scrolling */
+            overflow-y: auto;
             display: none;
-            background: var(--chat-bg);
-            padding-bottom: 120px; /* Space for chat input */
+            background: var(--chat-bg); /* White in light mode */
         }
 
         .content-area.active {
@@ -238,7 +202,7 @@
         .welcome-card {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 24px;
             cursor: pointer;
             transition: all 0.2s;
@@ -246,20 +210,18 @@
 
         .welcome-card:hover {
             border-color: var(--accent);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
         }
 
         .welcome-card h3 {
             font-size: 18px;
             margin-bottom: 8px;
             color: var(--text-primary);
-            font-weight: 400;
         }
 
         .welcome-card p {
             color: var(--text-secondary);
             font-size: 14px;
-            font-weight: 300;
         }
 
         .chat-container {
@@ -267,8 +229,8 @@
             bottom: 0;
             left: 280px;
             right: 0;
-            background: #1a1a1a; /* Always dark */
-            border-top: 1px solid #3a3a3a;
+            background: var(--chat-input-bg);
+            border-top: 1px solid var(--border);
             padding: 20px;
         }
 
@@ -276,77 +238,23 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            background: #2a2a2a; /* Always dark */
-            border: 1px solid #3a3a3a;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
             border-radius: 25px;
             padding: 12px 20px;
-            position: relative;
         }
 
         .chat-input {
             flex: 1;
             background: none;
             border: none;
-            color: #ffffff; /* Always white text */
+            color: var(--text-primary);
             font-size: 16px;
             outline: none;
         }
 
         .chat-input::placeholder {
-            color: #888888;
-        }
-
-        .emoji-btn {
-            background: transparent;
-            border: none;
-            color: #888888;
-            cursor: pointer;
-            font-size: 18px;
-            padding: 4px;
-            transition: all 0.2s;
-        }
-
-        .emoji-btn:hover {
-            color: #ffffff;
-        }
-
-        .emoji-picker {
-            position: absolute;
-            bottom: 60px;
-            left: 20px;
-            background: #2a2a2a;
-            border: 1px solid #3a3a3a;
-            border-radius: 8px;
-            padding: 15px;
-            display: none;
-            max-height: 200px;
-            overflow-y: auto;
-            width: 300px;
-            z-index: 1000;
-        }
-
-        .emoji-picker.show {
-            display: block;
-        }
-
-        .emoji-grid {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            gap: 8px;
-        }
-
-        .emoji-item {
-            background: transparent;
-            border: none;
-            font-size: 20px;
-            padding: 8px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-
-        .emoji-item:hover {
-            background: #3a3a3a;
+            color: var(--text-muted);
         }
 
         .voice-controls {
@@ -359,9 +267,9 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            border: 1px solid #3a3a3a;
-            background: transparent;
-            color: #ffffff;
+            border: none;
+            background: var(--accent);
+            color: white;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -370,13 +278,12 @@
         }
 
         .voice-btn:hover {
-            background: #ffffff;
-            color: #1a1a1a;
+            background: var(--accent-hover);
         }
 
         .memory-stats {
             background: var(--bg-secondary);
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 20px;
             margin-bottom: 20px;
             border: 1px solid var(--border);
@@ -384,8 +291,7 @@
 
         .memory-stats h3 {
             margin-bottom: 15px;
-            color: var(--text-primary);
-            font-weight: 400;
+            color: var(--accent);
         }
 
         .stat-item {
@@ -401,8 +307,8 @@
         }
 
         .stat-value {
-            font-weight: 400;
-            color: var(--text-primary);
+            font-weight: 600;
+            color: var(--accent);
         }
 
         .memory-context {
@@ -411,101 +317,37 @@
             margin-top: 5px;
         }
 
-        .facts-section {
-            background: var(--bg-secondary);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border);
-        }
-
-        .facts-section h3 {
-            margin-bottom: 15px;
-            color: var(--text-primary);
-            font-weight: 400;
-        }
-
-        .fact-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .fact-item:last-child {
-            border-bottom: none;
-        }
-
-        .fact-content {
-            flex: 1;
-        }
-
-        .fact-subject {
-            font-weight: 400;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-
-        .fact-detail {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        .fact-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .fact-btn {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.2s;
-        }
-
-        .fact-btn:hover {
-            background: var(--accent);
-            color: var(--bg-primary);
-        }
-
         .project-card, .task-card {
             background: var(--bg-secondary);
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 20px;
             margin-bottom: 15px;
             border: 1px solid var(--border);
         }
 
         .project-card h4, .task-card h4 {
-            color: var(--text-primary);
+            color: var(--accent);
             margin-bottom: 10px;
-            font-weight: 400;
         }
 
         .btn-primary {
             background: var(--accent);
-            color: var(--bg-primary);
-            border: 1px solid var(--accent);
+            color: white;
+            border: none;
             padding: 12px 24px;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: 400;
+            font-weight: 600;
             transition: all 0.2s;
         }
 
         .btn-primary:hover {
-            background: transparent;
-            color: var(--accent);
+            background: var(--accent-hover);
         }
 
         .notification-badge {
-            background: var(--text-muted);
-            color: var(--bg-primary);
+            background: #ef4444;
+            color: white;
             border-radius: 50%;
             width: 18px;
             height: 18px;
@@ -522,36 +364,36 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="logo">
-                <h1>iAI</h1>
+                <h1>iAI™</h1>
             </div>
             
             <div class="nav-section">
                 <div class="nav-title">Navigation</div>
                 <button class="nav-item active" data-tab="main">
-                    <i>⌂</i> Main
+                    <i>🏠</i> Main
                 </button>
                 <button class="nav-item" data-tab="memory">
-                    <i>◉</i> Memory
+                    <i>🧠</i> Memory
                 </button>
                 <button class="nav-item" data-tab="projects">
-                    <i>◫</i> Projects
+                    <i>📁</i> Projects
                 </button>
                 <button class="nav-item" data-tab="tasks">
-                    <i>☐</i> Tasks
+                    <i>✅</i> Tasks
                 </button>
                 <button class="nav-item" data-tab="chats">
-                    <i>◐</i> Chats
+                    <i>💬</i> Chats
                 </button>
             </div>
 
             <div class="nav-section">
                 <div class="nav-title">Resources</div>
                 <button class="nav-item" data-tab="library">
-                    <i>◈</i> Library
+                    <i>📚</i> Library
                     <span class="notification-badge">1</span>
                 </button>
                 <button class="nav-item" data-tab="notifications">
-                    <i>◎</i> Notifications
+                    <i>🔔</i> Notifications
                     <span class="notification-badge">1</span>
                 </button>
             </div>
@@ -562,11 +404,11 @@
             <div class="header">
                 <h2 id="page-title">Main</h2>
                 <div class="header-controls">
-                    <button class="theme-toggle" onclick="toggleTheme()">Light</button>
+                    <button class="theme-toggle" onclick="toggleTheme()">🌙 Dark</button>
                     <div class="status">
                         <span class="status-dot" id="connection-dot"></span>
-                        <span id="connection-status" style="color: #ffffff;">Checking...</span>
-                        <button class="settings-btn" onclick="testConnection()">Settings</button>
+                        <span id="connection-status">Checking...</span>
+                        <button class="btn-primary" onclick="testConnection()">⚙️</button>
                     </div>
                 </div>
             </div>
@@ -574,8 +416,8 @@
             <!-- Main Tab Content -->
             <div id="main-content" class="content-area active">
                 <div style="text-align: center; margin-bottom: 40px;">
-                    <h1 style="font-size: 48px; margin-bottom: 20px; font-weight: 300;">Hey there</h1>
-                    <p style="font-size: 18px; color: var(--text-secondary); font-weight: 300;">I'm Jay, your AI companion. I can speak to you with my voice and listen when you talk.</p>
+                    <h1 style="font-size: 48px; margin-bottom: 20px;">Hey there! 👋</h1>
+                    <p style="font-size: 18px; color: var(--text-secondary);">I'm Jay, your AI companion. I can speak to you with my voice and listen when you talk. Try the voice controls below!</p>
                 </div>
 
                 <div class="welcome-grid">
@@ -623,57 +465,22 @@
                             <div class="memory-context">Messages with emotional context</div>
                         </div>
                     </div>
-                </div>
-
-                <div class="facts-section">
-                    <h3>Facts About You</h3>
-                    <div id="facts-list">
-                        <p style="color: var(--text-muted); text-align: center; padding: 20px;">Loading facts...</p>
-                    </div>
-                </div>
-
-                <div class="facts-section">
-                    <h3>More Sample Facts</h3>
-                    <div class="fact-item">
-                        <div class="fact-content">
-                            <div class="fact-subject">Sample Fact 1</div>
-                            <div class="fact-detail">This is to test scrolling functionality</div>
-                        </div>
-                        <div class="fact-actions">
-                            <button class="fact-btn">Edit</button>
-                            <button class="fact-btn">Delete</button>
-                        </div>
-                    </div>
-                    <div class="fact-item">
-                        <div class="fact-content">
-                            <div class="fact-subject">Sample Fact 2</div>
-                            <div class="fact-detail">Another fact to test scrolling</div>
-                        </div>
-                        <div class="fact-actions">
-                            <button class="fact-btn">Edit</button>
-                            <button class="fact-btn">Delete</button>
-                        </div>
-                    </div>
-                    <div class="fact-item">
-                        <div class="fact-content">
-                            <div class="fact-subject">Sample Fact 3</div>
-                            <div class="fact-detail">More content to ensure scrolling works</div>
-                        </div>
-                        <div class="fact-actions">
-                            <button class="fact-btn">Edit</button>
-                            <button class="fact-btn">Delete</button>
+                    <div class="stat-item">
+                        <span>Facts Learned:</span>
+                        <div>
+                            <span class="stat-value" id="facts-count">Loading...</span>
+                            <div class="memory-context">Personal facts about you</div>
                         </div>
                     </div>
                 </div>
-
-                <button class="btn-primary" onclick="clearMemory()">Clear All Memory</button>
+                <button class="btn-primary" onclick="clearMemory()">Clear Memory</button>
             </div>
 
             <!-- Projects Tab Content -->
             <div id="projects-content" class="content-area">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h3 style="font-weight: 400;">Your Projects</h3>
-                    <button class="btn-primary" onclick="createProject()">New Project</button>
+                    <h3>Your Projects</h3>
+                    <button class="btn-primary" onclick="createProject()">+ New Project</button>
                 </div>
                 <div class="project-card">
                     <h4>iAI Development</h4>
@@ -681,50 +488,35 @@
                     <small style="color: var(--text-muted);">Last updated: Today</small>
                 </div>
                 <div class="project-card">
-                    <h4>Sample Project 1</h4>
-                    <p>This is to test scrolling functionality</p>
+                    <h4>Sample Project</h4>
+                    <p>This is where your projects will appear</p>
                     <small style="color: var(--text-muted);">Status: Planning</small>
-                </div>
-                <div class="project-card">
-                    <h4>Sample Project 2</h4>
-                    <p>Another project to test scrolling</p>
-                    <small style="color: var(--text-muted);">Status: In Progress</small>
-                </div>
-                <div class="project-card">
-                    <h4>Sample Project 3</h4>
-                    <p>More content to ensure scrolling works properly</p>
-                    <small style="color: var(--text-muted);">Status: Completed</small>
-                </div>
-                <div class="project-card">
-                    <h4>Sample Project 4</h4>
-                    <p>Additional project for testing scroll behavior</p>
-                    <small style="color: var(--text-muted);">Status: On Hold</small>
                 </div>
             </div>
 
             <!-- Tasks Tab Content -->
             <div id="tasks-content" class="content-area">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h3 style="font-weight: 400;">Your Tasks</h3>
-                    <button class="btn-primary" onclick="createTask()">New Task</button>
+                    <h3>Your Tasks</h3>
+                    <button class="btn-primary" onclick="createTask()">+ New Task</button>
                 </div>
                 <div class="task-card">
-                    <h4>Navigation System ✓</h4>
+                    <h4>Fix Navigation Tabs ✅</h4>
                     <p>Make the sidebar navigation functional</p>
-                    <small style="color: var(--text-muted);">Status: Completed</small>
+                    <small style="color: #22c55e;">Status: Completed</small>
                 </div>
                 <div class="task-card">
-                    <h4>Voice Features</h4>
+                    <h4>Add Voice Features</h4>
                     <p>Implement speech-to-text and text-to-speech</p>
-                    <small style="color: var(--text-muted);">Status: In Progress</small>
+                    <small style="color: #f59e0b;">Status: In Progress</small>
                 </div>
             </div>
 
             <!-- Chats Tab Content -->
             <div id="chats-content" class="content-area">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h3 style="font-weight: 400;">Chat History</h3>
-                    <button class="btn-primary" onclick="newChat()">New Chat</button>
+                    <h3>Chat History</h3>
+                    <button class="btn-primary" onclick="newChat()">+ New Chat</button>
                 </div>
                 <div id="chat-history">
                     <p style="color: var(--text-muted); text-align: center; margin-top: 50px;">Your chat conversations will appear here</p>
@@ -733,23 +525,23 @@
 
             <!-- Library Tab Content -->
             <div id="library-content" class="content-area">
-                <h3 style="font-weight: 400;">Shared Library</h3>
+                <h3>Shared Library</h3>
                 <p style="color: var(--text-muted); margin: 20px 0;">Files, images, and documents shared between you and Jay</p>
-                <div style="border: 2px dashed var(--border); border-radius: 8px; padding: 40px; text-align: center; margin: 20px 0;">
+                <div style="border: 2px dashed var(--border); border-radius: 12px; padding: 40px; text-align: center; margin: 20px 0;">
                     <p style="color: var(--text-muted);">Drop files here or click to upload</p>
                 </div>
             </div>
 
             <!-- Notifications Tab Content -->
             <div id="notifications-content" class="content-area">
-                <h3 style="font-weight: 400;">Notifications</h3>
+                <h3>Notifications</h3>
                 <div class="project-card">
-                    <h4>Navigation Fixed</h4>
+                    <h4>🎉 Navigation Fixed!</h4>
                     <p>Your sidebar navigation is now working perfectly</p>
                     <small style="color: var(--text-muted);">Just now</small>
                 </div>
                 <div class="project-card">
-                    <h4>Memory System Active</h4>
+                    <h4>🧠 Memory System Active</h4>
                     <p>Jay's smart memory system is learning about you</p>
                     <small style="color: var(--text-muted);">2 hours ago</small>
                 </div>
@@ -759,45 +551,14 @@
         <!-- Chat Input -->
         <div class="chat-container">
             <div class="chat-input-container">
-                <button class="emoji-btn" onclick="toggleEmojiPicker()">😊</button>
                 <input type="text" class="chat-input" placeholder="Talk to Jay..." id="message-input">
                 <div class="voice-controls">
-                    <button class="voice-btn" onclick="toggleSpeaker()" title="Hear Jay speak">◐</button>
-                    <button class="voice-btn" onclick="toggleMicrophone()" title="Speak to Jay">◉</button>
-                    <button class="voice-btn" onclick="sendMessage()" title="Send message">▶</button>
-                </div>
-                
-                <!-- Emoji Picker -->
-                <div class="emoji-picker" id="emoji-picker">
-                    <div class="emoji-grid">
-                        <button class="emoji-item" onclick="insertEmoji('😊')">😊</button>
-                        <button class="emoji-item" onclick="insertEmoji('😂')">😂</button>
-                        <button class="emoji-item" onclick="insertEmoji('❤️')">❤️</button>
-                        <button class="emoji-item" onclick="insertEmoji('👍')">👍</button>
-                        <button class="emoji-item" onclick="insertEmoji('🎉')">🎉</button>
-                        <button class="emoji-item" onclick="insertEmoji('🔥')">🔥</button>
-                        <button class="emoji-item" onclick="insertEmoji('💯')">💯</button>
-                        <button class="emoji-item" onclick="insertEmoji('🚀')">🚀</button>
-                        <button class="emoji-item" onclick="insertEmoji('💡')">💡</button>
-                        <button class="emoji-item" onclick="insertEmoji('🎯')">🎯</button>
-                        <button class="emoji-item" onclick="insertEmoji('⭐')">⭐</button>
-                        <button class="emoji-item" onclick="insertEmoji('✨')">✨</button>
-                        <button class="emoji-item" onclick="insertEmoji('🌟')">🌟</button>
-                        <button class="emoji-item" onclick="insertEmoji('💪')">💪</button>
-                        <button class="emoji-item" onclick="insertEmoji('🙌')">🙌</button>
-                        <button class="emoji-item" onclick="insertEmoji('👏')">👏</button>
-                        <button class="emoji-item" onclick="insertEmoji('🤔')">🤔</button>
-                        <button class="emoji-item" onclick="insertEmoji('😍')">😍</button>
-                        <button class="emoji-item" onclick="insertEmoji('🥳')">🥳</button>
-                        <button class="emoji-item" onclick="insertEmoji('😎')">😎</button>
-                        <button class="emoji-item" onclick="insertEmoji('🤗')">🤗</button>
-                        <button class="emoji-item" onclick="insertEmoji('😘')">😘</button>
-                        <button class="emoji-item" onclick="insertEmoji('🙃')">🙃</button>
-                        <button class="emoji-item" onclick="insertEmoji('😉')">😉</button>
-                    </div>
+                    <button class="voice-btn" onclick="toggleSpeaker()" title="Hear Jay speak">🔊</button>
+                    <button class="voice-btn" onclick="toggleMicrophone()" title="Speak to Jay">🎤</button>
+                    <button class="voice-btn" onclick="sendMessage()" title="Send message">▶️</button>
                 </div>
             </div>
-            <div style="text-align: center; margin-top: 10px; font-size: 12px; color: #888888;">
+            <div style="text-align: center; margin-top: 10px; font-size: 12px; color: var(--text-muted);">
                 <span>Jay voice</span> • <span>You speak</span>
             </div>
         </div>
@@ -814,42 +575,12 @@
             
             if (isDarkMode) {
                 body.removeAttribute('data-theme');
-                themeToggle.textContent = 'Light';
+                themeToggle.textContent = '🌙 Dark';
             } else {
                 body.setAttribute('data-theme', 'light');
-                themeToggle.textContent = 'Dark';
+                themeToggle.textContent = '☀️ Light';
             }
         }
-
-        // Emoji picker functionality
-        function toggleEmojiPicker() {
-            const picker = document.getElementById('emoji-picker');
-            picker.classList.toggle('show');
-        }
-
-        function insertEmoji(emoji) {
-            const input = document.getElementById('message-input');
-            const cursorPos = input.selectionStart;
-            const textBefore = input.value.substring(0, cursorPos);
-            const textAfter = input.value.substring(cursorPos);
-            
-            input.value = textBefore + emoji + textAfter;
-            input.focus();
-            input.setSelectionRange(cursorPos + emoji.length, cursorPos + emoji.length);
-            
-            // Hide emoji picker
-            document.getElementById('emoji-picker').classList.remove('show');
-        }
-
-        // Close emoji picker when clicking outside
-        document.addEventListener('click', function(event) {
-            const picker = document.getElementById('emoji-picker');
-            const emojiBtn = document.querySelector('.emoji-btn');
-            
-            if (!picker.contains(event.target) && !emojiBtn.contains(event.target)) {
-                picker.classList.remove('show');
-            }
-        });
 
         // Connection status management
         let isConnected = false;
@@ -864,16 +595,16 @@
                 
                 if (isConnected) {
                     dot.classList.remove('disconnected');
-                    status.textContent = 'Connected';
+                    status.textContent = 'Brain Connected';
                 } else {
                     dot.classList.add('disconnected');
-                    status.textContent = 'Disconnected';
+                    status.textContent = 'Brain Disconnected';
                 }
             } catch (error) {
                 const dot = document.getElementById('connection-dot');
                 const status = document.getElementById('connection-status');
                 dot.classList.add('disconnected');
-                status.textContent = 'Disconnected';
+                status.textContent = 'Brain Disconnected';
             }
         }
 
@@ -911,7 +642,6 @@
                     // Load content for specific tabs
                     if (targetTab === 'memory') {
                         loadMemoryStats();
-                        loadFacts();
                     } else if (targetTab === 'chats') {
                         loadChatHistory();
                     }
@@ -937,58 +667,16 @@
                 }
                 document.getElementById('memory-context').textContent = context;
                 
+                // Estimate facts count (this is approximate)
+                const factsCount = Math.floor((stats.totalMessages || 0) * 0.3);
+                document.getElementById('facts-count').textContent = factsCount;
+                
             } catch (error) {
                 console.error('Error loading memory stats:', error);
                 document.getElementById('total-messages').textContent = 'Error';
                 document.getElementById('memory-size').textContent = 'Error';
                 document.getElementById('emotional-messages').textContent = 'Error';
-            }
-        }
-
-        // Load facts from database
-        async function loadFacts() {
-            try {
-                const factsList = document.getElementById('facts-list');
-                
-                // Sample facts - replace with real database call
-                const sampleFacts = [
-                    { subject: 'user', attribute: 'name', value: 'Mari' },
-                    { subject: 'user', attribute: 'school', value: 'San Diego State University' },
-                    { subject: 'user', attribute: 'breakfast', value: '2 scoops of protein and coffee' },
-                    { subject: 'user', attribute: 'eye_color', value: 'hazel' },
-                    { subject: 'user', attribute: 'reason_for_assistant_name', value: 'lost love, Julio' },
-                ];
-                
-                if (sampleFacts.length > 0) {
-                    factsList.innerHTML = sampleFacts.map((fact, index) => `
-                        <div class="fact-item">
-                            <div class="fact-content">
-                                <div class="fact-subject">${fact.subject} ${fact.attribute}</div>
-                                <div class="fact-detail">${fact.value}</div>
-                            </div>
-                            <div class="fact-actions">
-                                <button class="fact-btn" onclick="editFact(${index})">Edit</button>
-                                <button class="fact-btn" onclick="deleteFact(${index})">Delete</button>
-                            </div>
-                        </div>
-                    `).join('');
-                } else {
-                    factsList.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">No facts stored yet</p>';
-                }
-            } catch (error) {
-                console.error('Error loading facts:', error);
-                document.getElementById('facts-list').innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">Error loading facts</p>';
-            }
-        }
-
-        function editFact(index) {
-            alert('Edit fact feature coming soon!');
-        }
-
-        function deleteFact(index) {
-            if (confirm('Are you sure you want to delete this fact?')) {
-                alert('Delete fact feature coming soon!');
-                loadFacts();
+                document.getElementById('facts-count').textContent = 'Error';
             }
         }
 
@@ -998,7 +686,6 @@
                     await window.electronAPI.clearMemory();
                     alert('Memory cleared successfully!');
                     loadMemoryStats();
-                    loadFacts();
                 } catch (error) {
                     alert('Error clearing memory: ' + error.message);
                 }
@@ -1110,7 +797,7 @@
             try {
                 const result = await window.electronAPI.testBrainConnection();
                 alert(result.message);
-                updateConnectionStatus();
+                updateConnectionStatus(); // Update status after test
             } catch (error) {
                 alert('Connection test failed: ' + error.message);
                 updateConnectionStatus();
