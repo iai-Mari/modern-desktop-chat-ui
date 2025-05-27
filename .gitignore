@@ -99,3 +99,4 @@ Desktop.ini
 # Electron
 app/dist/
 release/
+config.js
