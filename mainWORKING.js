@@ -186,38 +186,17 @@ SUMMARY:`
     }
   }
 
-// 🔧 FIXED: Advanced pattern detection with proper maxWeight initialization
-extractMessagePattern(message) {
-  const msg = message.toLowerCase()
+  // 🔧 ENHANCED: Advanced pattern detection with adaptive settings
+  extractMessagePattern(message) {
+    const msg = message.toLowerCase()
 
-  // Enhanced pattern classification
-  let type = "general"
-  let emotionalIntensity = 0
-  const complexity = this.calculateComplexity(message)
-  let urgency = 0
-  let maxWeight = 0 // 🔧 FIX: Initialize maxWeight here
+    // Enhanced pattern classification
+    let type = "general"
+    let emotionalIntensity = 0
+    const complexity = this.calculateComplexity(message)
+    let urgency = 0
 
-  // 🔧 NEW: Detect exclamations and emotional expressions first
-  const exclamationPatterns = {
-    excitement: { regex: /amazing|awesome|wow|omg|yay|hell yeah|amaaaz|balss|wooo|nice|great|fireeeee/i, weight: 2 },
-    casual_expression: { regex: /^[a-z]*[aeiou]{3,}[a-z]*$/i, weight: 1.5 }, // "amaaazzzeee"
-    name_mention: { regex: /julio|jay/i, weight: 1 },
-  }
-
-  // Check for exclamations first
-  for (const [patternType, pattern] of Object.entries(exclamationPatterns)) {
-    if (pattern.regex.test(msg)) {
-      if (patternType === "excitement" || patternType === "casual_expression") {
-        type = "exclamation"
-        emotionalIntensity = pattern.weight
-        maxWeight = pattern.weight // 🔧 FIX: Set maxWeight for exclamations
-        break
-      }
-    }
-  }
-
-  // Only check other patterns if not an exclamation
-  if (type === "general") {
+    // Classify message type with confidence scoring
     const patterns = {
       question: { regex: /\?|how|what|when|where|why|who|can you|do you|will you/i, weight: 1 },
       emotional: { regex: /feel|emotion|sad|happy|angry|stressed|love|hate|excited|worried/i, weight: 2 },
@@ -231,8 +210,7 @@ extractMessagePattern(message) {
       personal: { regex: /family|relationship|private|secret|personal/i, weight: 2 },
     }
 
-    // 🔧 FIX: Reset maxWeight for general patterns
-    maxWeight = 0
+    let maxWeight = 0
     for (const [patternType, pattern] of Object.entries(patterns)) {
       if (pattern.regex.test(msg) && pattern.weight > maxWeight) {
         type = patternType
@@ -245,37 +223,35 @@ extractMessagePattern(message) {
         }
       }
     }
-  }
 
-  // Detect context with enhanced classification
-  let context = "casual"
-  const contextPatterns = {
-    personal: /personal|private|secret|family|relationship|intimate/i,
-    professional: /work|job|school|study|business|career|meeting/i,
-    support_seeking: /help|support|advice|problem|issue|stuck|confused/i,
-    creative: /idea|creative|design|art|music|writing|project/i,
-    technical: /code|programming|software|computer|tech|digital/i,
-    celebratory: /amazing|awesome|great|excited|happy|yay|celebration|fireeeee/i,
-  }
+    // Detect context with enhanced classification
+    let context = "casual"
+    const contextPatterns = {
+      personal: /personal|private|secret|family|relationship|intimate/i,
+      professional: /work|job|school|study|business|career|meeting/i,
+      support_seeking: /help|support|advice|problem|issue|stuck|confused/i,
+      creative: /idea|creative|design|art|music|writing|project/i,
+      technical: /code|programming|software|computer|tech|digital/i,
+    }
 
-  for (const [contextType, regex] of Object.entries(contextPatterns)) {
-    if (regex.test(msg)) {
-      context = contextType
-      break
+    for (const [contextType, regex] of Object.entries(contextPatterns)) {
+      if (regex.test(msg)) {
+        context = contextType
+        break
+      }
+    }
+
+    return {
+      type,
+      context,
+      length: message.length,
+      complexity,
+      emotionalIntensity,
+      urgency,
+      confidence: maxWeight,
+      wordCount: message.split(/\s+/).length,
     }
   }
-
-  return {
-    type,
-    context,
-    length: message.length,
-    complexity,
-    emotionalIntensity,
-    urgency,
-    confidence: maxWeight, // 🔧 FIX: Now maxWeight is always defined
-    wordCount: message.split(/\s+/).length,
-  }
-}
 
   // 🔧 NEW: Adaptive GPT settings based on message patterns
   getAdaptiveGPTSettings(messagePattern, personalityTraits) {
@@ -284,11 +260,6 @@ extractMessagePattern(message) {
 
     // Adjust temperature based on message type
     switch (messagePattern.type) {
-      case "exclamation":
-        temperature = 1.0 + personalityTraits.playfulness * 0.2 // High energy for exclamations
-        maxTokens = Math.min(250, this.adaptiveSettings.baseMaxTokens * 0.8) // Shorter, punchy responses
-        break
-
       case "emotional":
         temperature = 0.8 + personalityTraits.empathy * 0.2 // More empathetic = more varied responses
         maxTokens = Math.min(450, this.adaptiveSettings.baseMaxTokens * 1.5) // Longer emotional responses
@@ -492,7 +463,7 @@ extractMessagePattern(message) {
     console.log("🎯 Enhanced personality reinforced:", this.personalityTraits)
   }
 
-  // 🔧 ENHANCED: Generate adaptive prompt with memory context and better pattern handling
+  // 🔧 ENHANCED: Generate adaptive prompt with memory context
   async generateAdaptivePrompt(basePrompt, messagePattern, userId) {
     let adaptedPrompt = basePrompt
 
@@ -502,38 +473,12 @@ extractMessagePattern(message) {
       adaptedPrompt += `\n\n🧠 COMPRESSED MEMORY CONTEXT (${memoryContext.age}):\n${memoryContext.summary}\n`
     }
 
-    // 🔧 FIX: Add instruction to suppress false error messages and handle context better
+    // 🔧 FIX: Add instruction to suppress false error messages
     adaptedPrompt += `\n\n🚨 CRITICAL RESPONSE RULES:
 - NEVER say "Ugh, I made a mistake" or "Sorry I repeated myself" unless there was an ACTUAL error
 - NEVER apologize for non-existent problems or repetitions
 - If you didn't actually repeat anything or make an error, don't claim you did
-- Be confident in your responses unless there's a real issue
-- DON'T treat exclamations or expressions as questions that need factual answers
-- When someone is being expressive/excited, match their energy!
-- Don't say "drawing a blank" unless they actually asked for specific information`
-
-    // 🔧 NEW: Pattern-specific instructions with better context awareness
-    switch (messagePattern.type) {
-      case "exclamation":
-        adaptedPrompt +=
-          "\n🎉 EXCLAMATION MODE: They're being expressive/excited! Match their energy and be enthusiastic back! Don't treat this as a question!"
-        break
-      case "urgent":
-        adaptedPrompt += "\n⚡ URGENT MODE: Be concise, helpful, and focused!"
-        break
-      case "technical":
-        adaptedPrompt += "\n🔧 TECHNICAL MODE: Be precise and informative!"
-        break
-      case "emotional":
-        adaptedPrompt += "\n💕 EMOTIONAL MODE: Be extra caring and supportive!"
-        break
-      case "casual":
-        adaptedPrompt += "\n😎 CASUAL MODE: Keep it light and fun!"
-        break
-      case "question":
-        adaptedPrompt += "\n❓ QUESTION MODE: They want information - be helpful and informative!"
-        break
-    }
+- Be confident in your responses unless there's a real issue`
 
     // Adjust based on learned personality traits
     if (this.personalityTraits.sassiness > 0.8) {
@@ -546,6 +491,22 @@ extractMessagePattern(message) {
 
     if (this.personalityTraits.humor > 0.8) {
       adaptedPrompt += "\n😄 HUMOR MODE: Feel free to be extra witty and funny!"
+    }
+
+    // Add pattern-specific instructions
+    switch (messagePattern.type) {
+      case "urgent":
+        adaptedPrompt += "\n⚡ URGENT MODE: Be concise, helpful, and focused!"
+        break
+      case "technical":
+        adaptedPrompt += "\n🔧 TECHNICAL MODE: Be precise and informative!"
+        break
+      case "emotional":
+        adaptedPrompt += "\n💕 EMOTIONAL MODE: Be extra caring and supportive!"
+        break
+      case "casual":
+        adaptedPrompt += "\n😎 CASUAL MODE: Keep it light and fun!"
+        break
     }
 
     // Add emergent behavior instructions
@@ -1323,7 +1284,7 @@ ipcMain.handle("search-facts", async (event, data) => {
   }
 })
 
-// 🔧 ENHANCED: Main message handler with conditional semantic memory and better pattern handling
+// 🔧 ENHANCED: Main message handler with memory compression and adaptive ML
 ipcMain.handle("send-message", async (event, data) => {
   try {
     // Reset error flags at start of each message
@@ -1383,30 +1344,21 @@ ipcMain.handle("send-message", async (event, data) => {
     const storedFacts = await getStoredFacts(userId)
     const factsList = storedFacts.map((f) => `- ${f.subject} ${f.attribute}: ${f.value}`).join("\n")
 
-    // 🧠 CONDITIONAL: Only search semantic memory for questions and memory tests
+    // 🧠 NEW: Semantic memory search with reasoning
     let memoryAnswers = ""
     let semanticAnswer = null
+    const semanticResult = await jayAI.semanticMemory.getAnswer(message, userId)
 
-    // Only search semantic memory if it's actually a question or memory test
-    if (
-      messagePattern.type === "question" ||
-      messagePattern.type === "memory_test" ||
-      messagePattern.type === "correction"
-    ) {
-      const semanticResult = await jayAI.semanticMemory.getAnswer(message, userId)
+    if (semanticResult.answer) {
+      // Store the semantic answer for processing but don't add system announcements to prompt
+      semanticAnswer = semanticResult.answer
+      console.log(`🧠 Semantic memory found: ${semanticAnswer}`)
 
-      if (semanticResult.answer) {
-        semanticAnswer = semanticResult.answer
-        console.log(`🧠 Semantic memory found: ${semanticAnswer}`)
-
-        // Add to context for GPT but in a natural way
-        memoryAnswers += `\n\nRELEVANT MEMORY: ${semanticAnswer}`
-        if (semanticResult.reasoning) {
-          console.log(`💭 Reasoning: ${semanticResult.reasoning}`)
-        }
+      // Add to context for GPT but in a natural way
+      memoryAnswers += `\n\nRELEVANT MEMORY: ${semanticAnswer}`
+      if (semanticResult.reasoning) {
+        console.log(`💭 Reasoning: ${semanticResult.reasoning}`)
       }
-    } else {
-      console.log(`🎯 Skipping semantic search for ${messagePattern.type} - not a question`)
     }
 
     // Get recent conversation history
@@ -1442,8 +1394,6 @@ ${factsList || "No facts stored yet."}${memoryAnswers}
 - If you didn't actually repeat anything or make an error, don't claim you did
 - Be confident in your responses unless there's a real issue
 - Don't mention "repeating messages" unless you actually did
-- DON'T treat exclamations or expressions as questions that need factual answers
-- When someone is being expressive/excited, match their energy!
 
 🎯 JAY'S PERSONALITY (BE THIS WAY):
 - Sassy with attitude but still caring 🔥
@@ -1811,4 +1761,3 @@ app.on("web-contents-created", (event, contents) => {
     shell.openExternal(navigationUrl)
   })
 })
-
